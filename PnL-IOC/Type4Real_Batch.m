@@ -2,12 +2,7 @@ close all;
 clc;
 clear;
 
-% addpath LPnL-Bar-ENull;
-% addpath others;
-% addpath ASPnL;
-% addpath RPnL;
-% addpath SRPnL;
-% addpath C2C;
+IniToolbox;
 
 %Type4 Room Camera Pose Estimation
 load('type4GroundTruth.mat');

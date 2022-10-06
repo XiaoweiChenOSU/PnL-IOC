@@ -2,18 +2,13 @@ close all;
 clc;
 clear;
 
-% addpath LPnL-Bar-ENull;
-% addpath others;
-% addpath ASPnL;
-% addpath RPnL;
-% addpath SRPnL;
-% addpath C2C;
+IniToolbox;
 
-%Type2 Room Camera Pose Estimation
+%Type1 Room Camera Pose Estimation
 noise=1;
 rateOutlier=0;
 genN = 100;
-Data = LayoutDataGen(2,noise,rateOutlier,genN);
+Data = LayoutDataGen(1,noise,rateOutlier,genN);
 ses = 0;
 sres = 0;
 stes = 0;
@@ -43,7 +38,7 @@ for j = 1:genN
     P1_w = pointS(:,1:3);
     P2_w(1,:) = pointE(1,1:3);
     P2_w(2:2:5,:) = pointS(2:2:5,1:3) + ones(2,1)*[0 0 50];
-    P2_w(3:2:5,:) = pointS(3:2:5,1:3) - ones(2,1)*[0 100 0];
+    P2_w(3:2:5,:) = pointS(3:2:5,1:3) + ones(2,1)*[0 50 0];
     P2_w_real = pointE(:,1:3);
     WT2 = pointE(:,1:3);
     
@@ -74,17 +69,17 @@ for j = 1:genN
     R_truth{j} = Data{j}.R;
     T_truth{j} = Data{j}.T;
     
+    
     tic;
-    [R13, T13, errs13] = ASPnL2(ip1', ip2', P1_w', P2_w');
+    [R13, T13, errs13] = ASPnL1(ip1', ip2', P1_w', P2_w');
     toc;
     time01(j) = toc;
     
     tic;
-    [R23, T23, errs23] = LPnL_Bar_ENull2(ip1', ip2', P1_w', P2_w');
+    [R23, T23, errs23] = LPnL_Bar_ENull1(ip1', ip2', P1_w', P2_w');
     toc;
     time02(j) = toc;
-    
-    
+   
     errOta(j) = errs13;
     errOts(j) = errs23;
     
@@ -103,7 +98,7 @@ for j = 1:genN
     errTs(j) = cal_translation_err(T23,T_truth{j});
     
     tic;
-    [R33, T33, errs33] = PnL_IOC2(ip1', ip2', P1_w', P2_w',A);
+    [R33, T33, errs33] = PnL_IOC1(ip1', ip2', P1_w', P2_w',A);
     toc;
     time03(j) = toc;
     
@@ -128,7 +123,7 @@ for j = 1:genN
     
     
     tic;
-    [R07, T07] = RPnL2(ip1', ip2', P1_w', P2_w'); 
+    [R07, T07] = RPnL1(ip1', ip2', P1_w', P2_w'); 
     toc;
     time07(j) = toc;
     errR07(j) = cal_rotation_err(R07,R_truth{j}); 
@@ -136,13 +131,22 @@ for j = 1:genN
     
     
     tic;
-    [R08, T08] = SRPnL2(ip1', ip2', P1_w', P2_w');
+    [R08, T08] = SRPnL1(ip1', ip2', P1_w', P2_w');
     toc;
     time08(j) = toc;
     errR08(j) = cal_rotation_err(R08,R_truth{j}); 
     errT08(j) = cal_translation_err(T08,T_truth{j});
     Rsr{j} = R08;
-
+    
+%     tic;
+%     [R09, T09] = ASPnLA11(ip1', ip2', P1_w', P2_w');
+%     toc;
+%     time09(j) = toc;
+%     errR09(j) = cal_rotation_err(R09,R_truth{j}); 
+%     errT09(j) = cal_translation_err(T09,T_truth{j});
+%     R9{j} = R09;
+%     
+    
     
     
 end
@@ -184,7 +188,6 @@ errAspnlARem = mean(errReAP);
 errAspnlAReme = median(errReAP);
 
 
-
 errRPNLRm = mean(errR07);
 errRPNLRme = median(errR07);
 errRPNLTm = mean(errT07);
@@ -196,16 +199,21 @@ errSRPNLRme = median(errR08);
 errSRPNLTm = mean(errT08);
 errSRPNLTme = median(errT08);
 
+
+% errIOC09Rm = mean(errR08);
+% errIOC09Rme = median(errR08);
+% errIOC09Tm = mean(errT08);
+% errIOC09Tme = median(errT08);
+
 ti01 = mean(time01);
 ti02 = mean(time02);
 ti03 = mean(time03);
 ti07 = mean(time07);
 ti08 = mean(time08);
 
-
-
 S = 'Finish.';
 disp(S);
+
 
 
 

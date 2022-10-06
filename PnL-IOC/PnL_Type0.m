@@ -2,17 +2,11 @@ close all;
 clc;
 clear;
 
-addpath LPnL-Bar-ENull;
-addpath others;
-addpath ASPnL;
-addpath RPnL;
-addpath SRPnL;
-addpath PnL-IOC;
 IniToolbox;
 
 
 %Type0 Room Camera Pose Estimation
-noise=8;
+noise=1;
 rateOutlier=0;
 genN = 100;
 Data = LayoutDataGen(0,noise,rateOutlier,genN);

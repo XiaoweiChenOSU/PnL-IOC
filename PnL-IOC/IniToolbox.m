@@ -1,0 +1,20 @@
+%init toolbox paths
+addpath('otherMs/ba');
+addpath('otherMs/p3p_code_final');
+addpath('otherMs/EPnP');
+addpath('otherMs/OPnP');
+addpath('otherMs/CEPPnP');
+addpath('otherMs/REPPnP');
+addpath('otherMs/MLPnP');
+addpath('otherMs/dlsu');
+addpath('otherMs/epnpu');
+addpath('otherMs/dls_pnp_matlab');
+addpath('otherMs/plotting');
+addpath('otherMs/common');
+addpath('otherMs/others');
+addpath('otherMs/LPnL-Bar-ENull');
+addpath('otherMs/others');
+addpath('otherMs/ASPnL');
+addpath('otherMs/RPnL');
+addpath('otherMs/SRPnL');
+addpath('PnL-IOC');

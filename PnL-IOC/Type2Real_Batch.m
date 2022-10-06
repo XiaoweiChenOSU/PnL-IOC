@@ -2,33 +2,24 @@ close all;
 clc;
 clear;
 
-% addpath LPnL-Bar-ENull;
-% addpath others;
-% addpath ASPnL;
-% addpath RPnL;
-% addpath SRPnL;
-% addpath C2C;
+IniToolbox;
+%Type2 Room Camera Pose Estimation
 
-%Type1 Room Camera Pose Estimation
-
-load('type1GroundTruth.mat');
+load('type2GroundTruth.mat');
 [~,numImage] = size(groundTruth);
 
 for j = 1:numImage
     
     R_truth = groundTruth(j).Rotation;
     T_truth = groundTruth(j).Translation;
+    C_truth = -inv(R_truth)*T_truth;
     p = groundTruth(j).point;
     P = groundTruth(j).wpoint;
-
     A = groundTruth(j).intrinsics_matrix;
-
+    offset = 0.001;
+    mul = 0.014;
 %     offset = 0;
 %     mul = 0;
-
-    offset = 0.0004;
-    mul = 0.0009;
-
     noise1 = [rand*mul-offset rand*mul-offset];
     noise2 = [rand*mul-offset rand*mul-offset];
     noise3 = [rand*mul-offset rand*mul-offset];
@@ -36,18 +27,23 @@ for j = 1:numImage
     noise5 = [rand*mul-offset rand*mul-offset];
     noise6 = [rand*mul-offset rand*mul-offset];
 
+
+%     
     p1 = [p(1,:)+noise1; p(1,:)+noise1; p(1,:)+noise1; p(2,:)+noise2;p(2,:)+noise2];
     p2 = [p(2,:)+noise2;p(3,:)+noise3;p(4,:)+noise4;p(5,:)+noise5;p(6,:)+noise6];
-
-    
-
-
-    P1_w = [P(1,:);P(1,:);P(1,:);P(2,:);P(2,:)];
+  
+ 
+    P1_w = [P(1,:); P(1,:); P(1,:); P(2,:);P(2,:)];
     P2_w = [P(2,:);P(3,:);P(4,:);P(5,:);P(6,:)];
 
 
 
-%     P2_w = [P(2,:);P(3,:);P(4,:);P(5,:);P(6,:)];
+
+
+
+
+
+
 
 
     for i = 1:length(p1)
@@ -61,28 +57,19 @@ for j = 1:numImage
 
 
 
-
-    [R13, T13, errs13] = ASPnLReal1(ip1', ip2', P1_w', P2_w');
-
+    [R13, T13, errs13] = ASPnLReal2(ip1', ip2', P1_w', P2_w',C_truth);
 
 
-
-    [R23, T23, errs23] = LPnL_Bar_ENullReal1(ip1', ip2', P1_w', P2_w');
-
+    [R23, T23, errs23] = LPnL_Bar_ENullReal2(ip1', ip2', P1_w', P2_w',C_truth);
 
 
-    [R33, T33, errs33, aPointsN] = PnL_IOCReal1(ip1', ip2', P1_w', P2_w', A);
-
-    [Rr33, Tr33, errs33r, aPointsNr] = PnL_IOCReal1nr(ip1', ip2', P1_w', P2_w', A);
+    [R33, T33, errs33, aPointsN] = PnL_IOCReal2(ip1', ip2', P1_w', P2_w',C_truth);
 
 
-
-    [R07, T07, err07] = RPnLReal1(ip1', ip2', P1_w', P2_w'); 
-
+    [R07, T07,err07] = RPnLReal2(ip1', ip2', P1_w', P2_w',C_truth); 
 
 
-
-    [R08, T08, err08] = SRPnLReal1(ip1', ip2', P1_w', P2_w');
+    [R08, T08, err08] = SRPnLReal2(ip1', ip2', P1_w', P2_w',C_truth);
 
 
     tempW2 = P2_w;
@@ -116,13 +103,8 @@ for j = 1:numImage
     
     errR_IOC(j) = cal_rotation_err(R33,R_truth); 
     errT_IOC(j) = cal_translation_err(T33,T_truth);
-
-
-    errRr_IOC(j) = cal_rotation_err(Rr33,R_truth); 
-    errTr_IOC(j) = cal_translation_err(Tr33,T_truth);
-
-    
 end
+
 
 errPnLIOC = mean(errep);
 errASPnL = mean(errepASPnL);
@@ -143,9 +125,6 @@ errLPnL_T = mean(errT_LPnL);
 errRPnL_T = mean(errT_RPnL);
 errSRPnL_T = mean(errT_SRPnL);
 
-
-% errPnLIOC_Rr = mean(errRr_IOC);
-% errPnLIOC_Tr = mean(errTr_IOC);
 
 
 S = 'Finish.';

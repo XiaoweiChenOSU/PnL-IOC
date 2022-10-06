@@ -2,12 +2,7 @@ close all;
 clc;
 clear;
 
-% addpath LPnL-Bar-ENull;
-% addpath others;
-% addpath ASPnL;
-% addpath RPnL;
-% addpath SRPnL;
-% addpath C2C;
+IniToolbox;
 
 %Type3 Room Camera Pose Estimation
 noise=2;
