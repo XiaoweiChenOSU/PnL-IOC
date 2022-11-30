@@ -1,4 +1,4 @@
-function [R, T, err] = LPnL_Bar_ENull5(p1, p2, P1_w, P2_w)
+function [R, T, err] = LPnL_Bar_ENullReal5(p1, p2, P1_w, P2_w, C_truth)
 % the line is expressed by the start and end points
 % inputs:
 %	 p1: 2d projection of the start point
@@ -226,11 +226,21 @@ Beta0=Betas/sc;
 
 %Just update R,T,Xc if Gauss Newton improves results (which is almost
 %always)
-if err_opt<min_err    
-    R=R_opt;
-    T=T_opt;
-    err = err_opt;
+% if err_opt<min_err    
+%     R=R_opt;
+%     T=T_opt;
+%     err = err_opt;
+% end
+
+cT = -inv(R_opt)*T_opt;
+if cT(1) < C_truth(1)-1 || cT(2) < C_truth(2)-1 || cT(3) < C_truth(3)-1 || cT(1) > C_truth(1)+1 || cT(2) > C_truth(2)+1 || cT(3) > C_truth(3)+1 
+    if err_opt<min_err    
+        R=R_opt;
+        T=T_opt;
+        err = err_opt;
+    end
 end
+
 
 
 opt.Beta0=Beta0;

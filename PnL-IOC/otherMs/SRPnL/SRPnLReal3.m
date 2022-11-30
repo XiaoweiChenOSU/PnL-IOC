@@ -268,7 +268,7 @@ for rootId = 1 : numOfRoots
 
         
         cT = -inv(Rr)*Rt;
-        if cT(1) < C_truth(1)-2 || cT(2) < C_truth(2)-2 || cT(3) < C_truth(3)-2 || cT(1) > C_truth(1)+2 || cT(2) > C_truth(2)+2 || cT(3) > C_truth(3)+2 
+        if cT(1) < C_truth(1)-1 || cT(2) < C_truth(2)-1 || cT(3) < C_truth(3)-1 || cT(1) > C_truth(1)+1 || cT(2) > C_truth(2)+1 || cT(3) > C_truth(3)+1 
             continue;
         end
                

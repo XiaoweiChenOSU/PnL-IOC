@@ -16,23 +16,15 @@ for j = 1:numImage
     p = groundTruth(j).point;
     P = groundTruth(j).wpoint;
     A = groundTruth(j).intrinsics_matrix;
-    offset = 0.001;
-    mul = 0.014;
-%     offset = 0;
-%     mul = 0;
-    noise1 = [rand*mul-offset rand*mul-offset];
-    noise2 = [rand*mul-offset rand*mul-offset];
-    noise3 = [rand*mul-offset rand*mul-offset];
-    noise4 = [rand*mul-offset rand*mul-offset];
-    noise5 = [rand*mul-offset rand*mul-offset];
-    noise6 = [rand*mul-offset rand*mul-offset];
 
 
-%     
-    p1 = [p(1,:)+noise1; p(1,:)+noise1; p(1,:)+noise1; p(2,:)+noise2;p(2,:)+noise2];
-    p2 = [p(2,:)+noise2;p(3,:)+noise3;p(4,:)+noise4;p(5,:)+noise5;p(6,:)+noise6];
+    p1 = [roundn((p(1,:)),-1); roundn((p(1,:)),-1); roundn((p(1,:)),-1); roundn((p(2,:)),-1);roundn((p(2,:)),-1)];
+    p2 = [roundn((p(2,:)),-1);roundn((p(3,:)),-1);roundn((p(4,:)),-1);roundn((p(5,:)),-1);roundn((p(6,:)),-1)];
   
+%     p1 = [round(p(1,:)); round(p(1,:)); round(p(1,:)); round(p(2,:));round(p(2,:))];
+%     p2 = [round(p(2,:));round(p(3,:));round(p(4,:));round(p(5,:));round(p(6,:))];
  
+
     P1_w = [P(1,:); P(1,:); P(1,:); P(2,:);P(2,:)];
     P2_w = [P(2,:);P(3,:);P(4,:);P(5,:);P(6,:)];
 
@@ -56,21 +48,33 @@ for j = 1:numImage
     end 
 
 
-
+    tic;
     [R13, T13, errs13] = ASPnLReal2(ip1', ip2', P1_w', P2_w',C_truth);
-
-
+    toc;
+    time01(j) = toc;
+    
+    tic;
     [R23, T23, errs23] = LPnL_Bar_ENullReal2(ip1', ip2', P1_w', P2_w',C_truth);
+    toc;
+    time02(j) = toc;
 
-
+    tic;
     [R33, T33, errs33, aPointsN] = PnL_IOCReal2(ip1', ip2', P1_w', P2_w',C_truth);
+    toc;
+    time03(j) = toc;
 
 
+    [Rr33, Tr33, errs33r, aPointsNr] = PnL_IOCReal2nr(ip1', ip2', P1_w', P2_w',C_truth);
+
+    tic;
     [R07, T07,err07] = RPnLReal2(ip1', ip2', P1_w', P2_w',C_truth); 
+    toc;
+    time04(j) = toc;
 
-
+    tic;
     [R08, T08, err08] = SRPnLReal2(ip1', ip2', P1_w', P2_w',C_truth);
-
+    toc;
+    time05(j) = toc;
 
     tempW2 = P2_w;
     tempW2(2,3) = aPointsN(1);
@@ -103,7 +107,14 @@ for j = 1:numImage
     
     errR_IOC(j) = cal_rotation_err(R33,R_truth); 
     errT_IOC(j) = cal_translation_err(T33,T_truth);
+
+
+    errRr_IOC(j) = cal_rotation_err(Rr33,R_truth); 
+    errTr_IOC(j) = cal_translation_err(Tr33,T_truth);
 end
+
+
+
 
 
 errPnLIOC = mean(errep);
@@ -126,6 +137,14 @@ errRPnL_T = mean(errT_RPnL);
 errSRPnL_T = mean(errT_SRPnL);
 
 
+errPnLIOC_Rr = mean(errRr_IOC);
+errPnLIOC_Tr = mean(errTr_IOC);
+
+T_ASPNLT = mean(time01);
+T_LPNLT = mean(time02);
+T_RPNLT = mean(time04);
+T_SRPNLT = mean(time05);
+T_PNLIOCT = mean(time03);
 
 S = 'Finish.';
 disp(S);

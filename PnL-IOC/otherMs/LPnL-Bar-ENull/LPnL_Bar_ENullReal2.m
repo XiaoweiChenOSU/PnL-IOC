@@ -226,6 +226,15 @@ Beta0=Betas/sc;
 
 %Just update R,T,Xc if Gauss Newton improves results (which is almost
 %always)
+% cT = -inv(R_opt)*T_opt;
+% if cT(1) < C_truth(1)-1 || cT(2) < C_truth(2)-1 || cT(3) < C_truth(3)-1 || cT(1) > C_truth(1)+1 || cT(2) > C_truth(2)+1 || cT(3) > C_truth(3)+1 
+%     if err_opt<min_err    
+%         R=R_opt;
+%         T=T_opt;
+%         err = err_opt;
+%     end
+% end
+
 if err_opt<min_err    
     R=R_opt;
     T=T_opt;

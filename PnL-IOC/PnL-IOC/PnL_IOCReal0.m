@@ -1,4 +1,4 @@
-function [R, T, minerr,aPointsN] = PnL_IOCReal0(p1, p2, P1_w, P2_w)
+function [R, T, minerr,aPointsN] = PnL_IOCReal0(p1, p2, P1_w, P2_w, C_truth)
 % the line is expressed by the start and end points
 % inputs:
 %	 p1: 2d projection of the start point
@@ -12,6 +12,8 @@ function [R, T, minerr,aPointsN] = PnL_IOCReal0(p1, p2, P1_w, P2_w)
 	nLine = length(p1);
 	p1 = [p1; ones(1,nLine)];
 	p2 = [p2; ones(1,nLine)];
+
+    [tR,tT] = LPnL_Bar_ENull0(p1(1:2,:), p2(1:2,:), P1_w, P2_w); 
 	
 %     [tR0, tT0, errt1] = RSPnL_(p1, p2, P1_w, P2_w);  
 %     [tR1,tT1] = invertRT(tR0,tT0);
@@ -20,7 +22,7 @@ function [R, T, minerr,aPointsN] = PnL_IOCReal0(p1, p2, P1_w, P2_w)
 % %        [tR,tT] = LPnL_Bar_ENull0(p1(1:2,:), p2(1:2,:), P1_w, P2_w); 
 % %     end
 % 
-%     [tR2, tT2, errt2] = RPnL0(p1(1:2,:),p2(1:2,:),P1_w, P2_w);
+%     [tR, tT, errt2] = RPnLReal0(p1(1:2,:),p2(1:2,:),P1_w, P2_w, C_truth);
 %     if errt1 < errt2
 %         tR = tR1;
 %         tT = tT1;
@@ -31,7 +33,7 @@ function [R, T, minerr,aPointsN] = PnL_IOCReal0(p1, p2, P1_w, P2_w)
 %         flag = 2;
 %     end
 
-     [tR,tT] = LPnL_Bar_ENull0(p1(1:2,:), p2(1:2,:), P1_w, P2_w); 
+%      [tR,tT] = LPnL_Bar_ENullReal0(p1(1:2,:), p2(1:2,:), P1_w, P2_w, C_truth); 
 %     if isinf(errt)
 %        [tR,tT,errt] = LPnL_Bar_ENull0(p1(1:2,:), p2(1:2,:), P1_w, P2_w); 
 % %         [tR,tT,errt] = ASPnL0(p1(1:2,:), p2(1:2,:), P1_w, P2_w); 
@@ -130,6 +132,8 @@ function [R, T, minerr,aPointsN] = PnL_IOCReal0(p1, p2, P1_w, P2_w)
 %     
     P1N_w = [P1_w W2(:,5:8)];
     P2N_w = [W2 W2(:,6:8) W2(:,5)];
+
+    [R, T, minerr] = LPnL_Bar_ENull0(pn1(1:2,:), pn2(1:2,:), P1N_w, P2N_w);
     
 %     [R, T, minerr] =  GN(pn1, pn2, P1N_w, P2N_w, tR);
 
@@ -137,7 +141,7 @@ function [R, T, minerr,aPointsN] = PnL_IOCReal0(p1, p2, P1_w, P2_w)
 %     P2N_w = [W2(:,5:8) W2(:,6:8) W2(:,5) W2(:,7:8) W2(:,6) W2(:,5) W2(:,8) W2(:,7)];
 
 
-    [R, T, minerr] = LPnL_Bar_ENull0(pn1(1:2,:), pn2(1:2,:), P1N_w, P2N_w);
+%     [R, T, minerr] = LPnL_Bar_ENullReal0(pn1(1:2,:), pn2(1:2,:), P1N_w, P2N_w, C_truth);
 %     if flag ==  1
 %         [tR0, tT0, minerr] = RSPnL_(pn1, pn2, P1N_w, P2N_w);  
 %         [R,T] = invertRT(tR0,tT0);
@@ -145,7 +149,7 @@ function [R, T, minerr,aPointsN] = PnL_IOCReal0(p1, p2, P1_w, P2_w)
 %         [R, T, minerr] = RPnL0(pn1(1:2,:), pn2(1:2,:), P1N_w, P2N_w);
 %     end
 
-%     [R, T, minerr] = RPnL0(pn1(1:2,:), pn2(1:2,:), P1N_w, P2N_w);
+%     [R, T, minerr] = RPnLReal0(pn1(1:2,:), pn2(1:2,:), P1N_w, P2N_w, C_truth);
 %     if isinf(minerr)
 %         [R, T, minerr] = LPnL_Bar_ENull0(pn1(1:2,:), pn2(1:2,:), P1N_w, P2N_w);
 % %         [tR,tT,errt] = ASPnL0(pn1(1:2,:), pn2(1:2,:), P1N_w, P2N_w); 

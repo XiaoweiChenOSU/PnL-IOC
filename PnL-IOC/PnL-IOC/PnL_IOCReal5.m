@@ -1,4 +1,4 @@
-function [R, T, minerr, aPointsN] = PnL_IOCReal5(p1, p2, P1_w, P2_w,IA)
+function [R, T, minerr, aPointsN] = PnL_IOCReal5(p1, p2, P1_w, P2_w,IA, C_truth)
 % the line is expressed by the start and end points
 % inputs:
 %	 p1: 2d projection of the start point
@@ -15,14 +15,14 @@ function [R, T, minerr, aPointsN] = PnL_IOCReal5(p1, p2, P1_w, P2_w,IA)
 	p1 = [p1; ones(1,nLine)];
 	p2 = [p2; ones(1,nLine)];
     
-%     [tR0, tT0, errt] = RSPnL_(p1, p2, P1_w, P2_w,IA);  
+%     [tR0, tT0, errt] = RSPnL_(p1, p2, P1_w, P2_w,IA,C_truth);  
 %     [tR,tT] = invertRT(tR0,tT0);
     
 % %     if errt > 1e1
 % %         [tR,tT,errt] = LPnL_Bar_ENull0(p1(1:2,:), p2(1:2,:), P1_w, P2_w); 
 % %     end
 % 	
-    [tR, tT, errt] = SRPnLReal5(p1(1:2,:), p2(1:2,:), P1_w, P2_w);  
+    [tR, tT, errt] = SRPnLReal5(p1(1:2,:), p2(1:2,:), P1_w, P2_w,C_truth);  
  
 %     [tR, tT, errt] = RPnL0(p1(1:2,:),p2(1:2,:),P1_w, P2_w);
 %     if isinf(errt)
@@ -61,10 +61,10 @@ function [R, T, minerr, aPointsN] = PnL_IOCReal5(p1, p2, P1_w, P2_w,IA)
     P2N_w = [W2 W2(:,4:5) W2(:,3:2:5) W2(:,5) W2(:,4) W2(:,4) W2(:,2) W2(:,5) W2(:,3)];
 
     
-    [R, T, minerr] = SRPnLReal5(pn1(1:2,:), pn2(1:2,:), P1N_w, P2N_w);
+    [R, T, minerr] = SRPnLReal5(pn1(1:2,:), pn2(1:2,:), P1N_w, P2N_w, C_truth);
 %      [R, T, minerr] = LPnL_Bar_ENull5(pn1(1:2,:), pn2(1:2,:), P1N_w, P2N_w);
 
-%     [R0, T0, minerr] = RSPnL_(pn1, pn2, P1N_w, P2N_w, IA); 
+%     [R0, T0, minerr] = RSPnL_(pn1, pn2, P1N_w, P2N_w, IA,C_truth); 
 %     [R,T] = invertRT(R0,T0);
 %     
 %     if minerr > 1e1
@@ -85,7 +85,7 @@ function [R, T, minerr, aPointsN] = PnL_IOCReal5(p1, p2, P1_w, P2_w,IA)
     
     
 
-function [rot_cw, pos_cw,errpro] = RSPnL_(p1,p2,P1_w,P2_w,IA)
+function [rot_cw, pos_cw,errpro] = RSPnL_(p1,p2,P1_w,P2_w,IA,C_truth)
 
 % xuchi
 [Vw, Pw] = getVP(P1_w, P2_w);
@@ -356,10 +356,11 @@ for HowToChooseFixedTwoLines = 1:3
         d = xnorm(d);
         rot_wc = Roptimzation(p1(1:2,:), p2(1:2,:), IA, rot_wc, d, 20);
 		[rot_wc, pos_wc, err] =  GN(p1, p2, P1_w, P2_w, rot_wc);
-%         cT = -inv(rot_wc)*pos_wc;
-%         if cT(1) < 0 || cT(2) < 0 || cT(3) < 0 || cT(1) > 256 || cT(2) > 256 || cT(3) > 256 
-%             continue;
-%         end
+        cT = -inv(rot_wc)*pos_wc;
+        if cT(1) < C_truth(1)-1 || cT(2) < C_truth(2)-1 || cT(3) < C_truth(3)-1 || cT(1) > C_truth(1)+1 || cT(2) > C_truth(2)+1 || cT(3) > C_truth(3)+1 
+            continue;
+        end
+        
         [rot_cw, pos_cw] = invertRT(rot_wc, pos_wc);
         
         % xuchi

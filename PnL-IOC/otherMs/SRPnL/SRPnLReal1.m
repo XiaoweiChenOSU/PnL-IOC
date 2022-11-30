@@ -5,7 +5,7 @@
 % Address:  College of Electrical and Information Engineering, Lanzhou University of Technology              
 % My site:  https://sites.google.com/view/ping-wang-homepage  
 
-function [ R_wc,t_wc ,minErr] = SRPnL1(p1,p2,W1,W2)
+function [ R_wc,t_wc ,minErr] = SRPnLReal1(p1,p2,W1,W2,C_truth)
 
 
 optR = 0;
@@ -265,12 +265,10 @@ for rootId = 1 : numOfRoots
                    2*s3+2*s1*s2,1-s1^2+s2^2-s3^2,2*s2*s3-2*s1;
                    2*s1*s3-2*s2,2*s1+2*s2*s3,1-s1^2-s2^2+s3^2];
         Rt=factor*CC*sr;
-%         cT = -inv(Rr)*Rt;
-%         TMacom = max(max(abs([W1';W2'])));
-%         TMicom = max(max(abs([W1';W2'])));
-%         if isnan(cT(1)) || isnan(cT(2)) ||isnan(cT(3)) || cT(1) < 0 || cT(2) < 0 || cT(3) < 0 || cT(1) > 256 || cT(2) > 256 || cT(3) > 256  
-%             continue;
-%         end
+        cT = -inv(Rr)*Rt;
+        if cT(1) < C_truth(1)-1 || cT(2) < C_truth(2)-1 || cT(3) < C_truth(3)-1 || cT(1) > C_truth(1)+1 || cT(2) > C_truth(2)+1 || cT(3) > C_truth(3)+1 
+            continue;
+        end
         curErr=sr.'*GG*sr;
         if curErr<minErr
             optR=Rr;

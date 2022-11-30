@@ -24,7 +24,7 @@ function [solution,obj_pre] = CopyRefineGaussNewtonForApoints(solution,E,G1,CC, 
     sr=[1,s1,s2,s3,s1^2,s1*s2,s1*s3,s2^2,s2*s3,s3^2].';
     Tr =  factor*CC*w; 
     errOrt = getErr(p1, p2, P1_w, P2_w,Rr,Tr);
-    for in = 1:5
+    for in = 1:1
         %Jacobian matrix
         Jac=[ 0,        0,     0,    0,     0,     0,     0,        0,     0,    0,     0,     0;
               1,        0,     0,    0,     0,     0,     0,        0,     0,    0,     0,     0;

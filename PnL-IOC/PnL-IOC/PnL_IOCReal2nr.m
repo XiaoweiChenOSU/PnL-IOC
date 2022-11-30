@@ -18,7 +18,7 @@ function [R, T, err, aPointsN] = PnL_IOCReal2nr(p1, p2, P1_w, P2_w,C_truth)
 %     [tR0, tT0, errt] = RSPnL_(p1, p2, P1_w, P2_w,IA);  
 %     [tR,tT] = invertRT(tR0,tT0);
 	
-    [tR, tT, errt] = SRPnLReal2(p1(1:2,:), p2(1:2,:), P1_w, P2_w,C_truth);  
+    [tR, tT, errt2] = RPnLReal2(p1(1:2,:),p2(1:2,:),P1_w, P2_w,C_truth); 
 %     [tR, tT, errt] = RPnLReal2(p1(1:2,:),p2(1:2,:),P1_w, P2_w,C_truth);
 %     [tR, tT, errt] = ASPnLReal2(p1(1:2,:),p2(1:2,:),P1_w, P2_w);
 %     if isinf(errt)

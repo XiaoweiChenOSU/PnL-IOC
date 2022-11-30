@@ -18,8 +18,12 @@ for j = 1:numImage
     P = groundTruth(j).wpoint;
 
     cH = C_truth(2);
-    p1 = [p(1,:); p(1,:); p(1,:)];
-    p2 = [p(2,:);p(3,:);p(4,:)];
+%     p1 = [p(1,:); p(1,:); p(1,:)];
+%     p2 = [p(2,:);p(3,:);p(4,:)];
+
+    p1 = [roundn((p(1,:)),-1); roundn((p(1,:)),-1); roundn((p(1,:)),-1)];
+    p2 = [roundn((p(2,:)),-1);roundn((p(3,:)),-1);roundn((p(4,:)),-1)];
+
 
     P1_w = [P(1,:); P(1,:); P(1,:)];
     P2_w = [P(2,:);P(3,:);P(4,:)];
@@ -31,8 +35,14 @@ for j = 1:numImage
 %     P2_w(3,:) = P1_w(3,:) + [0 0 1];
 
 
-
-
+%     I = imread('0b2156c0034b43bc8b06023a4c4fe2db_i1_2.jpg');
+% 
+%     imshow(I); hold on;
+% 
+%     line([p1(1,1),p2(1,1)],[p1(1,2),p2(1,2)],'Color','Red','LineWidth',3);
+%     line([p1(2,1),p2(2,1)],[p1(2,2),p2(2,2)],'Color','Red','LineWidth',3);
+%     line([p1(3,1),p2(3,1)],[p1(3,2),p2(3,2)],'Color','Red','LineWidth',3);
+ 
 
 
 
@@ -51,16 +61,26 @@ for j = 1:numImage
 
 
 
+    tic;
     [R23, T23, errs23] = SRPnLReal3(ip1', ip2', P1_w', P2_w',C_truth);
+    toc;
+    time02(j) = toc;
 
-
-
-
+    tic;
     [R33, T33, aPointsN, errs33] = PnL_IOCReal3(ip1', ip2', P1_w', P2_w',C_truth);
+    toc;
+    time03(j) = toc;
+
+    
+    [Rr33, Tr33, errs33r, aPointsNr] = PnL_IOCReal3nr(ip1', ip2', P1_w', P2_w',C_truth);
 
 
+
+
+    tic;
     [R08, T08, err08] = ASPnLReal3(ip1', ip2', P1_w', P2_w',C_truth);
-
+    toc;
+    time01(j) = toc;
 
 
     tempW2 = P2_w;
@@ -86,6 +106,9 @@ for j = 1:numImage
     
     errR_IOC(j) = cal_rotation_err(R33,R_truth); 
     errT_IOC(j) = cal_translation_err(T33,T_truth);
+
+    errRr_IOC(j) = cal_rotation_err(Rr33,R_truth); 
+    errTr_IOC(j) = cal_translation_err(Tr33,T_truth);
 end
 
 
@@ -101,6 +124,16 @@ errSRPnL_R = mean(errR_SRPnL);
 errPnLIOC_T = mean(errT_IOC);
 errASPnL_T = mean(errT_ASPnL);
 errSRPnL_T = mean(errT_SRPnL);
+
+% errPnLIOC_Rr = mean(errRr_IOC);
+% errPnLIOC_Tr = mean(errTr_IOC);
+
+
+
+T_ASPNLT = mean(time01);
+T_SRPNLT = mean(time02);
+T_PNLIOCT = mean(time03);
+
 
 
 S = 'Finish.';

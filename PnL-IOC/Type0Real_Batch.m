@@ -16,41 +16,26 @@ for j = 1:numImage
     
     R_truth = groundTruth(j).Rotation;
     T_truth = groundTruth(j).Translation;
+    C_truth = -inv(R_truth)*T_truth;
     p = groundTruth(j).point;
     P = groundTruth(j).wpoint;
     A = groundTruth(j).intrinsics_matrix;
     Lheight = groundTruth(j).Lheight;
     Lwidth = groundTruth(j).Lwidth;
-% % 
-%     Lwidth =3.69283131691707;
-% 
 
-%     offset = 0.5;
-%     mul = 1;  
-   f = A(1,1);
-
- 
-
-    offset = 0.5;
-    mul = 1;
-
-%     offset = 0;
-%     mul = 0;
 
     noise = 1;
 
-    noise1 = [rand*mul-offset rand*mul-offset];
-    noise2 = [rand*mul-offset rand*mul-offset];
-    noise3 = [rand*mul-offset rand*mul-offset];
-    noise4 = [rand*mul-offset rand*mul-offset];
-    noise5 = [rand*mul-offset rand*mul-offset];
-    noise6 = [rand*mul-offset rand*mul-offset];
-    noise7 = [rand*mul-offset rand*mul-offset];
-    noise8 = [rand*mul-offset rand*mul-offset];
+    f = A(1,1);
     
+    p1 = [round(p(1,:));round(p(2,:));round(p(3,:));round(p(4,:));round(p(1,:));round(p(2,:));round(p(3,:));round(p(4,:))];
+    p2 = [round(p(2,:));round(p(3,:));round(p(4,:));round(p(1,:));round(p(5,:));round(p(6,:));round(p(7,:));round(p(8,:))];
 
-    p1 = [p(1,:)+noise1;p(2,:)+noise2;p(3,:)+noise3;p(4,:)+noise4;p(1,:)+noise1;p(2,:)+noise2;p(3,:)+noise3;p(4,:)+noise4];
-    p2 = [p(2,:)+noise2;p(3,:)+noise3;p(4,:)+noise4;p(1,:)+noise1;p(5,:)+noise5;p(6,:)+noise6;p(7,:)+noise7;p(8,:)+noise8];
+
+
+%     p1 = [roundn(p(1,:),-1);roundn(p(2,:),-1);roundn(p(3,:),-1);roundn(p(4,:),-1);roundn(p(1,:),-1);roundn(p(2,:),-1);roundn(p(3,:),-1);roundn(p(4,:),-1)];
+%     p2 = [roundn(p(2,:),-1);roundn(p(3,:),-1);roundn(p(4,:),-1);roundn(p(1,:),-1);roundn(p(5,:),-1);roundn(p(6,:),-1);roundn(p(7,:),-1);roundn(p(8,:),-1)];
+% 
 
     pointS = [P(1,:);P(2,:);P(3,:);P(4,:);P(1,:);P(2,:);P(3,:);P(4,:)];
     pointE = [P(2,:);P(3,:);P(4,:);P(1,:);P(5:8,:)];
@@ -87,24 +72,33 @@ for j = 1:numImage
     P2N_w = [W2 W2(:,6:8) W2(:,5) W2(:,7:8) W2(:,6) W2(:,5) W2(:,8) W2(:,7)];
 
 
+    tic;
+    [R01, T01, errs01] = ASPnLReal0(ip1', ip2', P1_w', P2_w', C_truth);
+    toc;
+    time01(j) = toc;
 
-    [R01, T01, errs01] = ASPnL0(ip1', ip2', P1_w', P2_w');
+    tic;
+    [R02, T02, errs02] = LPnL_Bar_ENullReal0(ip1', ip2', P1_w', P2_w', C_truth);
+    toc;
+    time02(j) = toc;
+
+    tic;
+    [R07, T07, err07] = RPnLReal0(ip1', ip2', P1_w', P2_w', C_truth); 
+    toc;
+    time03(j) = toc;
+
+    tic;
+    [R08, T08, err08] = SRPnLReal0(ip1', ip2', P1_w', P2_w', C_truth);
+    toc;
+    time04(j) = toc;
+
+    tic;
+    [R33, T33, errs33, aPointsN] = PnL_IOCReal0(ip1', ip2', P1_w', P2_w', C_truth);
+    toc;
+    time05(j) = toc;
 
 
-
-    [R02, T02, errs02] = LPnL_Bar_ENull0(ip1', ip2', P1_w', P2_w');
-
-
-    [R07, T07, err07] = RPnL0(ip1', ip2', P1_w', P2_w'); 
-
-
-    [R08, T08, err08] = SRPnL0(ip1', ip2', P1_w', P2_w');
-
-
-
-    [R33, T33, errs33, aPointsN] = PnL_IOCReal0(ip1', ip2', P1_w', P2_w');
-
-    [R33r, T33r, errs33r, aPointsNr] = PnL_IOCReal0nr(ip1', ip2', P1_w', P2_w');
+    [R33r, T33r, errs33r, aPointsNr] = PnL_IOCReal0nr(ip1', ip2', P1_w', P2_w', C_truth);
 
     [R_u, T_u, is_fail] = dlsu_full_type0Real(noise,f,A,P1_w,P2_w,p1,p2,R_truth,T_truth);
 
@@ -181,8 +175,8 @@ errLPnL_T = mean(errT_LPnL);
 errRPnL_T = mean(errT_RPnL);
 errSRPnL_T = mean(errT_SRPnL);
 
-% errPnLIOC_Rr = mean(errRr_IOC);
-% errPnLIOC_Tr = mean(errTr_IOC);
+errPnLIOC_Rr = mean(errRr_IOC);
+errPnLIOC_Tr = mean(errTr_IOC);
 
 
 errDLSURm = mean(errRDU((isfinite(errRDU))));
@@ -191,6 +185,12 @@ errDLSURme = median(errRDU((isfinite(errRDU))));
 errDLSUTm = mean(errTDU((isfinite(errTDU))));
 errDLSUTme = median(errTDU((isfinite(errTDU))));
 
+
+T_ASPNLT = mean(time01);
+T_LPNLT = mean(time02);
+T_RPNLT = mean(time03);
+T_SRPNLT = mean(time04);
+T_PNLIOCT = mean(time05);
 
 S = 'Finish.';
 disp(S);

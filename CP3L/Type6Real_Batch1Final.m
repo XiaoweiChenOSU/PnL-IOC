@@ -16,7 +16,7 @@ addpath('TypeReal67MultiGA');
 load('type7GroundTruth1.mat');
 [~,numImage] = size(groundTruth);
 
-for j = 17:numImage
+for j = 1:numImage
 
     %Type6 Room Camera Pose Estimation
     

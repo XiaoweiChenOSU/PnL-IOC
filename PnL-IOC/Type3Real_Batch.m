@@ -20,19 +20,23 @@ for j = 1:numImage
 
     Lheight = 2.9133239326302;
 
-%     offset = 0;
-%     mul = 0;
 
-    offset = 0.00001;
-    mul = 0.00002;
-    noise1 = [rand*mul-offset rand*mul-offset];
-    noise2 = [rand*mul-offset rand*mul-offset];
-    noise3 = [rand*mul-offset rand*mul-offset];
-    noise4 = [rand*mul-offset rand*mul-offset];
+%     p1 = [p(1,:); p(1,:); p(1,:)];
+%     p2 = [p(2,:); p(3,:); p(4,:)];
 
-    p1 = [p(1,:)+noise1; p(1,:)+noise1; p(1,:)+noise1];
-    p2 = [p(2,:)+noise2;p(3,:)+noise3;p(4,:)+noise4];
-%     P1_w = [0,Lheight,0;0,Lheight,0;0,Lheight,0];
+    p1 = [roundn((p(1,:)),-1); roundn((p(1,:)),-1); roundn((p(1,:)),-1)];
+    p2 = [roundn((p(2,:)),-1);roundn((p(3,:)),-1);roundn((p(4,:)),-1)];
+
+% 
+%     I = imread('10c2796a0ad1486f835e992139f31b18_i0_4.jpg');
+% 
+%     imshow(I); hold on;
+% 
+%     line([p1(1,1),p2(1,1)],[p1(1,2),p2(1,2)],'Color','Red','LineWidth',3);
+%     line([p1(2,1),p2(2,1)],[p1(2,2),p2(2,2)],'Color','Red','LineWidth',3);
+%     line([p1(3,1),p2(3,1)],[p1(3,2),p2(3,2)],'Color','Red','LineWidth',3);
+    
+    %     P1_w = [0,Lheight,0;0,Lheight,0;0,Lheight,0];
 % 
 %     P2_w(1,:) = P1_w(1,:) + [1 0 0];
 %     P2_w(2,:) = P1_w(2,:) - [0 1 0];
@@ -53,17 +57,26 @@ for j = 1:numImage
     end 
 
 
-
+    tic;
     [R23, T23, errs23] = SRPnLReal3(ip1', ip2', P1_w', P2_w',C_truth);
+    toc;
+    time02(j) = toc;
+
+    tic;
+    [R33, T33, aPointsN, errs33] = PnL_IOCReal3nr(ip1', ip2', P1_w', P2_w',C_truth);
+    toc;
+    time03(j) = toc;
+
+    
+    [Rr33, Tr33, errs33r, aPointsNr] = PnL_IOCReal3(ip1', ip2', P1_w', P2_w',C_truth);
 
 
 
 
-    [R33, T33, aPointsN, errs33] = PnL_IOCReal3(ip1', ip2', P1_w', P2_w',C_truth);
-
-
+    tic;
     [R08, T08, err08] = ASPnLReal3(ip1', ip2', P1_w', P2_w',C_truth);
-
+    toc;
+    time01(j) = toc;
 
 
     tempW2 = P2_w;
@@ -88,8 +101,10 @@ for j = 1:numImage
     
     errR_IOC(j) = cal_rotation_err(R33,R_truth); 
     errT_IOC(j) = cal_translation_err(T33,T_truth);
-    
-    
+
+    errRr_IOC(j) = cal_rotation_err(Rr33,R_truth); 
+    errTr_IOC(j) = cal_translation_err(Tr33,T_truth);
+        
 end
 
 errPnLIOC = mean(errep);
@@ -104,6 +119,13 @@ errSRPnL_R = mean(errR_SRPnL);
 errPnLIOC_T = mean(errT_IOC);
 errASPnL_T = mean(errT_ASPnL);
 errSRPnL_T = mean(errT_SRPnL);
+
+errPnLIOC_Rr = mean(errRr_IOC);
+errPnLIOC_Tr = mean(errTr_IOC);
+
+T_ASPNLT = mean(time01);
+T_SRPNLT = mean(time02);
+T_PNLIOCT = mean(time03);
 
 
 S = 'Finish.';

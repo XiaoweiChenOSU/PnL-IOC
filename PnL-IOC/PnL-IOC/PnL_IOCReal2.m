@@ -18,9 +18,17 @@ function [R, T, err, aPointsN] = PnL_IOCReal2(p1, p2, P1_w, P2_w,C_truth)
 %     [tR0, tT0, errt] = RSPnL_(p1, p2, P1_w, P2_w,IA);  
 %     [tR,tT] = invertRT(tR0,tT0);
 	
-    [tR, tT, errt] = SRPnLReal2(p1(1:2,:), p2(1:2,:), P1_w, P2_w,C_truth);  
-%     [tR, tT, errt] = RPnLReal2(p1(1:2,:),p2(1:2,:),P1_w, P2_w,C_truth);
-%     [tR, tT, errt] = ASPnLReal2(p1(1:2,:),p2(1:2,:),P1_w, P2_w);
+%     [tR, tT, errt1] = SRPnLReal2(p1(1:2,:), p2(1:2,:), P1_w, P2_w,C_truth);  
+%     [tR2, tT2, errt2] = RPnLReal2(p1(1:2,:),p2(1:2,:),P1_w, P2_w,C_truth);
+%     if errt1 > errt2
+%         tR = tR2;
+%         tT = tT2;
+%     else
+%         tR = tR1;
+%         tT = tT1;
+%     end
+  [tR, tT, errt2] = RPnLReal2(p1(1:2,:),p2(1:2,:),P1_w, P2_w,C_truth);
+    %     [tR, tT, errt] = ASPnLReal2(p1(1:2,:),p2(1:2,:),P1_w, P2_w);
 %     if isinf(errt)
 %        [tR,tT,errt] = LPnL_Bar_ENull2(p1(1:2,:), p2(1:2,:), P1_w, P2_w); 
 %     end
@@ -70,8 +78,14 @@ function [R, T, err, aPointsN] = PnL_IOCReal2(p1, p2, P1_w, P2_w,C_truth)
 %     [R0, T0, err] = RSPnL_(pn1, pn2, P1N_w, P2N_w); 
 %     [R,T] = invertRT(R0,T0);
 
-%     [R, T, err] = RPnLReal2(pn1(1:2,:),pn2(1:2,:),P1N_w, P2N_w,C_truth);
+
     [R, T, err] = SRPnLReal2(pn1(1:2,:),pn2(1:2,:),P1N_w, P2N_w,C_truth);
+%     if errt1 > errt2
+%         [R, T, err] = RPnLReal2(pn1(1:2,:),pn2(1:2,:),P1N_w, P2N_w,C_truth);
+%     else
+%         [R, T, err] = SRPnLReal2(pn1(1:2,:),pn2(1:2,:),P1N_w, P2N_w,C_truth);
+%     end
+%     [R, T, err] = SRPnLReal2(pn1(1:2,:),pn2(1:2,:),P1N_w, P2N_w,C_truth);
 %     [R, T, err] = ASPnLReal2(pn1(1:2,:),pn2(1:2,:),P1N_w, P2N_w);
 %     if isinf(err)
 %        [R,T,err] = LPnL_Bar_ENull2(pn1(1:2,:), pn2(1:2,:), P1N_w, P2N_w); 

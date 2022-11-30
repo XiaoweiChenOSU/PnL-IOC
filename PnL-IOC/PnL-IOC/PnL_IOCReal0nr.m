@@ -1,4 +1,4 @@
-function [R, T, minerr,aPointsN] = PnL_IOCReal0nr(p1, p2, P1_w, P2_w)
+function [R, T, minerr,aPointsN] = PnL_IOCReal0nr(p1, p2, P1_w, P2_w, C_truth)
 % the line is expressed by the start and end points
 % inputs:
 %	 p1: 2d projection of the start point
@@ -31,7 +31,10 @@ function [R, T, minerr,aPointsN] = PnL_IOCReal0nr(p1, p2, P1_w, P2_w)
 %         flag = 2;
 %     end
 
-     [tR,tT] = LPnL_Bar_ENull0(p1(1:2,:), p2(1:2,:), P1_w, P2_w); 
+%      [tR,tT] = LPnL_Bar_ENullReal0(p1(1:2,:), p2(1:2,:), P1_w, P2_w, C_truth); 
+
+    [tR,tT] = LPnL_Bar_ENull0(p1(1:2,:), p2(1:2,:), P1_w, P2_w); 
+	
 %     if isinf(errt)
 %        [tR,tT,errt] = LPnL_Bar_ENull0(p1(1:2,:), p2(1:2,:), P1_w, P2_w); 
 % %         [tR,tT,errt] = ASPnL0(p1(1:2,:), p2(1:2,:), P1_w, P2_w); 
@@ -136,8 +139,9 @@ function [R, T, minerr,aPointsN] = PnL_IOCReal0nr(p1, p2, P1_w, P2_w)
 %     P1N_w = [P1_w(:,5:8) W2(:,5:8) W2(:,5:6) P1_w(:,1:4)];
 %     P2N_w = [W2(:,5:8) W2(:,6:8) W2(:,5) W2(:,7:8) W2(:,6) W2(:,5) W2(:,8) W2(:,7)];
 
-
-    [R, T, minerr] = LPnL_Bar_ENull0(pn1(1:2,:), pn2(1:2,:), P1N_w, P2N_w);
+    [R, T, minerr] = LPnL_Bar_ENull0(p1(1:2,:), p2(1:2,:), P1_w, P2_w); 
+	
+%     [R, T, minerr] = LPnL_Bar_ENullReal0(pn1(1:2,:), pn2(1:2,:), P1N_w, P2N_w, C_truth);
 %     if flag ==  1
 %         [tR0, tT0, minerr] = RSPnL_(pn1, pn2, P1N_w, P2N_w);  
 %         [R,T] = invertRT(tR0,tT0);

@@ -1,4 +1,4 @@
-function [R, T, err] = ASPnL5(p1, p2, P1_w, P2_w)
+function [R, T, err] = ASPnLReal5(p1, p2, P1_w, P2_w,C_truth)
 % the line is expressed by the start and end points
 % inputs:
 %	 p1: 2d projection of the start point
@@ -13,14 +13,14 @@ function [R, T, err] = ASPnL5(p1, p2, P1_w, P2_w)
 	p1 = [p1; ones(1,nLine)];
 	p2 = [p2; ones(1,nLine)];
 	
-    [R0, T0, err] = RSPnL_(p1, p2, P1_w, P2_w);  
+    [R0, T0, err] = RSPnL_(p1, p2, P1_w, P2_w,C_truth);  
     [R,T] = invertRT(R0,T0);
     
     
     
     
 
-function [rot_cw, pos_cw,errpro] = RSPnL_(p1,p2,P1_w,P2_w)
+function [rot_cw, pos_cw,errpro] = RSPnL_(p1,p2,P1_w,P2_w,C_truth)
 
 % xuchi
 [Vw, Pw] = getVP(P1_w, P2_w);
@@ -288,10 +288,10 @@ for HowToChooseFixedTwoLines = 1:3
         	continue;
         end
 		[rot_wc, pos_wc, err] =  GN(p1, p2, P1_w, P2_w, rot_wc);
-%         cT = -inv(rot_wc)*pos_wc;
-%         if cT(1) < 0 || cT(2) < 0 || cT(3) < 0 || cT(1) > 256 || cT(2) > 256 || cT(3) > 256 
-%             continue;
-%         end
+        cT = -inv(rot_wc)*pos_wc;
+        if cT(1) < C_truth(1)-1 || cT(2) < C_truth(2)-1 || cT(3) < C_truth(3)-1 || cT(1) > C_truth(1)+1 || cT(2) > C_truth(2)+1 || cT(3) > C_truth(3)+1 
+            continue;
+        end
         [rot_cw, pos_cw] = invertRT(rot_wc, pos_wc);
         % xuchi
         conditionErr = err;        

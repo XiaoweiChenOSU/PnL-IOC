@@ -266,7 +266,7 @@ for rootId = 1 : numOfRoots
                    2*s1*s3-2*s2,2*s1+2*s2*s3,1-s1^2-s2^2+s3^2];
         Rt=factor*CC*sr;
         cT = -inv(Rr)*Rt;
-        if cT(1) < C_truth(1)-2 || cT(2) < C_truth(2)-2 || cT(3) < C_truth(3)-2 || cT(1) > C_truth(1)+2 || cT(2) > C_truth(2)+2 || cT(3) > C_truth(3)+2 
+        if cT(1) < C_truth(1)-1 || cT(2) < C_truth(2)-1 || cT(3) < C_truth(3)-1 || cT(1) > C_truth(1)+1 || cT(2) > C_truth(2)+1 || cT(3) > C_truth(3)+1 
             continue;
         end
         curErr=sr.'*GG*sr;

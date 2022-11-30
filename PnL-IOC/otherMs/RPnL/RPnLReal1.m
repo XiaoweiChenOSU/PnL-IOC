@@ -1,4 +1,4 @@
-function [RR,tt,err]=RPnL1(p1,p2,P1_w, P2_w)
+function [RR,tt,err]=RPnLReal1(p1,p2,P1_w, P2_w,C_truth)
 
 opt_R = 0;
 n = length(p1);
@@ -253,12 +253,15 @@ for rootId = 1 : numOfRoots
         [rot_wc,pos_wc] = getRT([Pw Pw2]',[Pc_new Pc2_new]');
          RR(:,:,rootId)=rot_wc;
          tt(:,rootId)=pos_wc;
-        cT = -inv(rot_wc)*pos_wc;
+         cT = -inv(rot_wc)*pos_wc;
+         if cT(1) < C_truth(1)-1 || cT(2) < C_truth(2)-1 || cT(3) < C_truth(3)-1 || cT(1) > C_truth(1)+1 || cT(2) > C_truth(2)+1 || cT(3) > C_truth(3)+1 
+            continue;
+         end
 %         TMacom = max(max(abs([P1_w';P2_w'])));
 %         TMicom = max(max(abs([P1_w';P2_w'])));
-        if cT(1) < 0 || cT(2) < 0 || cT(3) < 0 || cT(1) > 256 || cT(2) > 256 || cT(3) > 256 
-           continue;
-        end
+%         if cT(1) < 0 || cT(2) < 0 || cT(3) < 0 || cT(1) > 256 || cT(2) > 256 || cT(3) > 256 
+%            continue;
+%         end
         curErr = projectionErr(p1, p2, P1_w, P2_w, rot_wc);
         if curErr<minErr
             opt_R=rot_wc;

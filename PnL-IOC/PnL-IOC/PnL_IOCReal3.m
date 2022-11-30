@@ -373,8 +373,7 @@ for rootId = 1 : numOfRoots
             tempW2(3,3) = solutionA(6);
             Pn1_w1 = [W1 tempW2];
             Pn2_w1 = [tempW2 tempW2(:,2:3) tempW2(:,1)];
-                   
-     
+                  
         end
  
         aPointsCh = solutionA(4:6);

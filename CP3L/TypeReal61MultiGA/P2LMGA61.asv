@@ -28,7 +28,7 @@ individuVide.TB = [];
 %-----------------------------------------
 GAParameters.PopSize = 100; %temp
 GAParameters.ArchiveSize = 50; %temp
-GAParameters.Gmax = 200; %temp
+GAParameters.Gmax = 100; %temp
 GAParameters.Pc = 0.8; %temp
 GAParameters.Pm = 0.1; %temp
 GAParameters.pSwap=0.2;                              %?????????
@@ -163,7 +163,7 @@ while (G < GAParameters.Gmax)
     %-----------------------------------------
     %   Final results display
     %-----------------------------------------
-    ResultatsDisplay61(F1, G);
+%     ResultatsDisplay61(F1, G);
     
     G = G+1;
 end
