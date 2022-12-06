@@ -5,6 +5,8 @@ clear;
 
 addpath('SRPnL');
 addpath('others');
+addpath('RPnL');
+addpath('LPnL-Bar-ENull');
 addpath('TypeReal61MultiGA');
 addpath('TypeReal62MultiGA');
 addpath('TypeReal63MultiGA');
@@ -13,7 +15,7 @@ addpath('TypeReal65MultiGA');
 addpath('TypeReal66MultiGA');
 addpath('TypeReal67MultiGA');
 
-load('type7GroundTruth1.mat');
+load('type6GroundTruth.mat');
 [~,numImage] = size(groundTruth);
 
 for j = 1:numImage
@@ -27,8 +29,10 @@ for j = 1:numImage
     C_truth = -inv(Rtruth)*Ttruth;
     A = groundTruth(j).intrinsics_matrix;
     cH = C_truth(2);
-    p1 = [p(1,:);p(2,:)];
-    p2 = [p(3,:);p(4,:)];
+    p1 = [round(p(1,:));round(p(2,:))];
+    p2 = [round(p(3,:));round(p(4,:))];
+    
+    
     
     
     Lheight = groundTruth(j).Lheight;
@@ -42,13 +46,13 @@ for j = 1:numImage
     P1_w = [P(1,:);P(2,:)];
     P2_w = [P(3,:);P(4,:)];
     P_W1 = [P(1,:);P(4,:)];
-    p_w1 = [p(1,:);p(4,:)];
+    p_w1 = [round(p(1,:));round(p(4,:))];
     P_W2 = [P(3,:);P(2,:)];
-    p_w2 = [p(3,:);p(2,:)];
+    p_w2 = [round(p(3,:));round(p(2,:))];
     P_W3 = [P(1,:);P(3,:)];
-    p_w3 = [p(1,:);p(3,:)];
+    p_w3 = [round(p(1,:));round(p(3,:))];
     P_W4 = [P(2,:);P(4,:)];
-    p_w4 = [p(2,:);p(4,:)];
+    p_w4 = [round(p(2,:));round(p(4,:))];
 
 
 
@@ -147,9 +151,10 @@ for j = 1:numImage
 %     [RB, TB, errB] = SRPnLReal61(ip1B', ip2B', T1P1_wB', T1P2_wB', C_truth);
 %     [RC, TC, errC] = SRPnLReal61(ip1C', ip2C', T1P1_wC', T1P2_wC', C_truth);
 %     [RD, TD, errD] = SRPnLReal61(ip1D', ip2D', T1P1_wD', T1P2_wD', C_truth);
-    [RE1, TE1, errE1] = SRPnLReal(ip1', ip2', T1P1_w', T1P2_w',C_truth);
+%     [RE1, TE1, errE1] = SRPnLReal(ip1', ip2', T1P1_w', T1P2_w',C_truth);
+% 
+%     [RE2, TE2, errE2] = SRPnLReal61(ip1A', ip2A', T1P1_wA', T1P2_wA',C_truth);
 
-    
     W1 = T1P1_wA(1:2,:)';
     W2 = T1P2_wA(1:2,:)';
 
@@ -160,9 +165,6 @@ for j = 1:numImage
     p = [p; ones(1,nLine)];
     
     [~,n] = max(abs(W2(:,1) - W1(:,1)));
-
-    [RE2, TE2, errE2] = SRPnLReal61(ip1A', ip2A', T1P1_wA', T1P2_wA',C_truth,n);
-
 
     clearvars apoint aPointsN aPointsNt aPointsNs apointsIni apointsInis apointsInit apointsIniu apointsIniv aPointsNu aPointsNv T1P1_wA T1P2_wA T1P1_wB T1P2_wB T1P1_wC T1P2_wC T1P1_wD T1P2_wD Rf Tf Rtf Ttf Rsf Tsf 
     tic;
@@ -212,7 +214,7 @@ for j = 1:numImage
 %             errBmin = F1(i).ValObjective(2);
 %         end 
     end  
-
+    
     
     
 %     [Rt,aPoints] = CalculateTandIbyR(p1, p2, W1, W2, C_truth, RAt);
@@ -292,7 +294,8 @@ for j = 1:numImage
 %             line([Urep710(2,1),p1(1,1)],[Urep710(2,2),p1(1,2)],'Color','Red','LineWidth',3);
 %             line([p2(2,1),Urep710(1,1)],[p2(2,2),Urep710(1,2)],'Color','Red','LineWidth',3);
         end
-
+        toc;
+        time61 = toc; 
 
         R71{j} = Rf;
         T71{j} = Tf;
@@ -453,7 +456,8 @@ for j = 1:numImage
 %             line([Urep710(2,1),p1(1,1)],[Urep710(2,2),p1(1,2)],'Color','Red','LineWidth',3);
 %             line([p2(2,1),Urep710(1,1)],[p2(2,2),Urep710(1,2)],'Color','Red','LineWidth',3);
         end
-
+        toc;
+        time61 = toc; 
 
         R71{j} = Rf;
         T71{j} = Tf;
@@ -618,9 +622,13 @@ for j = 1:numImage
 %             line([p2(2,1),Urep710(1,1)],[p2(2,2),Urep710(1,2)],'Color','Red','LineWidth',3);
 
         end
-
+        toc;
+        time61 = toc; 
+        
       
         
+      
+
         R71{j} = Rf;
         T71{j} = Tf;
         error71{j} = obj_cur; 
@@ -713,8 +721,7 @@ for j = 1:numImage
         errTtfs71{j} = cal_translation_err(Tfs,Ttruth);
     end
     
-    toc;
-    time71{j} = toc; 
+    
 
 
 
@@ -826,7 +833,8 @@ for j = 1:numImage
             p2a = p_w3;
             [errep720{j},Urep720{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
         end
-
+        toc;
+        time62 = toc; 
 
         R72{j} = Rf;
         T72{j} = Tf;
@@ -982,7 +990,8 @@ for j = 1:numImage
             p2a = p_w3;
             [errep720{j},Urep720{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
         end
-
+        toc;
+        time62 = toc; 
 
         R72{j} = Rf;
         T72{j} = Tf;
@@ -1137,6 +1146,8 @@ for j = 1:numImage
             p2a = p_w3;
             [errep720{j},Urep720{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
         end
+        toc;
+        time62 = toc; 
 
         R72{j} = Rf;
         T72{j} = Tf;
@@ -1229,9 +1240,6 @@ for j = 1:numImage
         errRtfs72{j} = cal_rotation_err(Rfs,Rtruth);
         errTtfs72{j} = cal_translation_err(Tfs,Ttruth);
     end
-    
-    toc;
-    time72{j} = toc; 
 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1336,7 +1344,8 @@ for j = 1:numImage
             p2a = p_w4;
             [errep730{j},Urep730{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
         end
-
+        toc;
+        time63 = toc; 
 
         R73{j} = Rf;
         T73{j} = Tf;
@@ -1492,7 +1501,8 @@ for j = 1:numImage
             p2a = p_w4;
             [errep730{j},Urep730{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
         end
- 
+        toc;
+        time63 = toc; 
 
         R73{j} = Rf;
         T73{j} = Tf;
@@ -1605,12 +1615,7 @@ for j = 1:numImage
             end 
         else
             [EE,GG,CC] = RefineEquA63B3(p, W);
-            [~,s2] = size(apointb);
-            if s2 ~= 3
-                apointsIni = [0 0]';
-            else
-                apointsIni = [apointb(2) apointb(3)]';
-            end          
+            apointsIni = [apointb(2) apointb(3)]';
             solutionO = [Cayley(RBt);apointsIni]; 
             [solution, obj_cur] = RefineGaussNewtonRandApT63B2(solutionO, p, W, EE, GG, CC, Lheight);
 
@@ -1652,7 +1657,8 @@ for j = 1:numImage
             p2a = p_w4;
             [errep730{j},Urep730{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
         end
-
+        toc;
+        time63 = toc; 
 
         R73{j} = Rf;
         T73{j} = Tf;
@@ -1663,12 +1669,7 @@ for j = 1:numImage
 
 
         [EEt,GGt,CCt] = RefineEquA63A3(p, W);
-        [~,sa] = size(apointa);
-        if sa ~= 3
-            apointsInit = [0 0]';
-        else
-            apointsInit = [apointa(1) apointa(3)]';
-        end 
+        apointsInit = [apointa(1) apointa(3)]';
         solutionOt = [Cayley(RAt);apointsInit]; 
         [solutiont, obj_cur] = RefineGaussNewtonRandApT63A3(solutionOt, p, W, EEt, GGt, CCt, Lheight);
 
@@ -1751,9 +1752,6 @@ for j = 1:numImage
         errRtfs73{j} = cal_rotation_err(Rfs,Rtruth);
         errTtfs73{j} = cal_translation_err(Tfs,Ttruth);
     end
-    
-    toc;
-    time73{j} = toc; 
 
 %      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     clearvars apointa apointb aPointsN aPointsNt aPointsNs apointsIni apointsInis apointsInit apointsIniu apointsIniv aPointsNu aPointsNv T1P1_wA T1P2_wA T1P1_wB T1P2_wB T1P1_wC T1P2_wC T1P1_wD T1P2_wD Rf Tf Rtf Ttf Rfs Tfs
@@ -1860,7 +1858,8 @@ for j = 1:numImage
             p2a = p_w3;
             [errep740{j},Urep740{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
         end
-
+        toc;
+        time64 = toc; 
 
         R74{j} = Rf;
         T74{j} = Tf;
@@ -2017,7 +2016,8 @@ for j = 1:numImage
             p2a = p_w3;
             [errep740{j},Urep740{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
         end
-
+        toc;
+        time64 = toc; 
 
         R74{j} = Rf;
         T74{j} = Tf;
@@ -2173,7 +2173,8 @@ for j = 1:numImage
             p2a = p_w3;
             [errep740{j},Urep740{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
         end
-
+        toc;
+        time64 = toc; 
 
         R74{j} = Rf;
         T74{j} = Tf;
@@ -2267,9 +2268,6 @@ for j = 1:numImage
         errRtfs74{j} = cal_rotation_err(Rfs,Rtruth);
         errTtfs74{j} = cal_translation_err(Tfs,Ttruth);
     end
-    
-    toc;
-    time74{j} = toc; 
 
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     clearvars apointa apointb aPointsN aPointsNt aPointsNs apointsIni apointsInis apointsInit apointsIniu apointsIniv aPointsNu aPointsNv T1P1_wA T1P2_wA T1P1_wB T1P2_wB T1P1_wC T1P2_wC T1P1_wD T1P2_wD Rf Tf Rtf Ttf Rfs Tfs
@@ -2376,6 +2374,8 @@ for j = 1:numImage
             [errep750{j},Urep750{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
         end
 
+        toc;
+        time65 = toc; 
 
         R75{j} = Rf;
         T75{j} = Tf;
@@ -2531,7 +2531,8 @@ for j = 1:numImage
             [errep750{j},Urep750{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
         end
 
-
+        toc;
+        time65 = toc; 
 
         R75{j} = Rf;
         T75{j} = Tf;
@@ -2687,6 +2688,9 @@ for j = 1:numImage
             [errep750{j},Urep750{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
         end
 
+        toc;
+        time65 = toc; 
+
         R75{j} = Rf;
         T75{j} = Tf;
         error75{j} = obj_cur; 
@@ -2778,9 +2782,6 @@ for j = 1:numImage
         errRtfs75{j} = cal_rotation_err(Rfs,Rtruth);
         errTtfs75{j} = cal_translation_err(Tfs,Ttruth);
     end
-    
-    toc;
-    time75{j} = toc; 
 % 
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     clearvars apoint aPointsN aPointsNt aPointsNs apointsIni apointsInis apointsInit apointsIniu apointsIniv aPointsNu aPointsNv T1P1_wA T1P2_wA T1P1_wB T1P2_wB T1P1_wC T1P2_wC T1P1_wD T1P2_wD Rf Tf Rtf Ttf Rfs Tfs F1
@@ -2884,7 +2885,8 @@ for j = 1:numImage
             [errep760{j},Urep760{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
         end
 
-         
+        toc;
+        time66 = toc; 
 
         R76{j} = Rf;
         T76{j} = Tf;
@@ -3039,7 +3041,8 @@ for j = 1:numImage
             [errep760{j},Urep760{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
         end
 
- 
+        toc;
+        time66 = toc; 
 
         R76{j} = Rf;
         T76{j} = Tf;
@@ -3193,7 +3196,8 @@ for j = 1:numImage
             [errep760{j},Urep760{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
         end
 
-
+        toc;
+        time66 = toc; 
 
         R76{j} = Rf;
         T76{j} = Tf;
@@ -3285,9 +3289,6 @@ for j = 1:numImage
         errRtfs76{j} = cal_rotation_err(Rfs,Rtruth);
         errTtfs76{j} = cal_translation_err(Tfs,Ttruth);      
     end
-    
-    toc;
-    time76{j} = toc;
 
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %     clearvars apointa apointb aPointsN aPointsNt aPointsNs apointsIni apointsInis apointsInit apointsIniu apointsIniv aPointsNu aPointsNv T1P1_wA T1P2_wA T1P1_wB T1P2_wB T1P1_wC T1P2_wC T1P1_wD T1P2_wD Rf Tf Rtf Ttf Rfs Tfs Ruf Tuf Rfv Tfv F1
@@ -3466,7 +3467,8 @@ for j = 1:numImage
 %             [errep770{j},Urep770{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
 %         end
 % 
-% 
+%         toc;
+%         time67 = toc; 
 % 
 %         R77{j} = Rf;
 %         T77{j} = Tf;
@@ -3511,11 +3513,11 @@ for j = 1:numImage
 %         p2a = p_w1;
 %         [errep771{j},Urep771{j}]=reprojection_error_usingRT(Pa,p2a,Rtf,Ttf,A);
 % 
-%         Rth77{j} = Rtf;
-%         Tth77{j} = Ttf;
-%         errortf77{j} = obj_cur; 
-%         errRtf77{j} = cal_rotation_err(Rtf,Rtruth);
-%         errTtf77{j} = cal_translation_err(Ttf,Ttruth);
+%         Rth71{j} = Rtf;
+%         Tth71{j} = Ttf;
+%         errortf71{j} = obj_cur; 
+%         errRtf71{j} = cal_rotation_err(Rtf,Rtruth);
+%         errTtf71{j} = cal_translation_err(Ttf,Ttruth);
 % 
 % 
 % 
@@ -3759,6 +3761,8 @@ for j = 1:numImage
 %             [errep770{j},Urep770{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
 %         end
 % 
+%         toc;
+%         time67 = toc; 
 % 
 %         R77{j} = Rf;
 %         T77{j} = Tf;
@@ -3803,11 +3807,11 @@ for j = 1:numImage
 %         p2a = p_w1;
 %         [errep771{j},Urep771{j}]=reprojection_error_usingRT(Pa,p2a,Rtf,Ttf,A);
 % 
-%         Rth77{j} = Rtf;
-%         Tth77{j} = Ttf;
-%         errortf77{j} = obj_cur; 
-%         errRtf77{j} = cal_rotation_err(Rtf,Rtruth);
-%         errTtf77{j} = cal_translation_err(Ttf,Ttruth);
+%         Rth71{j} = Rtf;
+%         Tth71{j} = Ttf;
+%         errortf71{j} = obj_cur; 
+%         errRtf71{j} = cal_rotation_err(Rtf,Rtruth);
+%         errTtf71{j} = cal_translation_err(Ttf,Ttruth);
 % 
 % 
 % 
@@ -4049,7 +4053,8 @@ for j = 1:numImage
 %             [errep770{j},Urep770{j}]=reprojection_error_usingRT(Pa,p2a,Rf,Tf,A);
 %         end
 % 
-% 
+%         toc;
+%         time67 = toc; 
 % 
 %         R77{j} = Rf;
 %         T77{j} = Tf;
@@ -4094,11 +4099,11 @@ for j = 1:numImage
 %         p2a = p_w1;
 %         [errep771{j},Urep771{j}]=reprojection_error_usingRT(Pa,p2a,Rtf,Ttf,A);
 % 
-%         Rth77{j} = Rtf;
-%         Tth77{j} = Ttf;
-%         errortf77{j} = obj_cur; 
-%         errRtf77{j} = cal_rotation_err(Rtf,Rtruth);
-%         errTtf77{j} = cal_translation_err(Ttf,Ttruth);
+%         Rth71{j} = Rtf;
+%         Tth71{j} = Ttf;
+%         errortf71{j} = obj_cur; 
+%         errRtf71{j} = cal_rotation_err(Rtf,Rtruth);
+%         errTtf71{j} = cal_translation_err(Ttf,Ttruth);
 % 
 % 
 % 
@@ -4229,9 +4234,6 @@ for j = 1:numImage
 %         errRtfv77(j) = cal_rotation_err(Rfv,Rtruth);
 %         errTtfv77(j) = cal_translation_err(Tfv,Ttruth);
 %     end
-%     
-%     toc;
-%     time77{j} = toc; 
 
 end
 
@@ -4257,8 +4259,8 @@ Avg_errep770 = mean(cell2mat(errep770));
 Avg_errep771 = mean(cell2mat(errep771));
 Avg_errep772 = mean(cell2mat(errep772));
 Avg_errep773 = mean(cell2mat(errep773));
-Avg_errep774 = mean(cell2mat(errep774));
-
+% Avg_errep774 = mean(cell2mat(errep774));
+% 
 % 
 % 
 % 

@@ -406,7 +406,7 @@ if tagNum == 7
             end
         end
     end
-    save('type6GroundTruth1.mat','groundTruth');
+    save('type6GroundTruth.mat','groundTruth');
 end
 if tagNum == 8
     for j  = 1:numTest
@@ -463,6 +463,6 @@ if tagNum == 8
             end
         end
     end
-    save('type7GroundTruth1.mat','groundTruth');
+    save('type7GroundTruth.mat','groundTruth');
 end
     

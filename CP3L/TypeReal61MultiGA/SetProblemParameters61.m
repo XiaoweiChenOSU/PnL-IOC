@@ -48,7 +48,7 @@ function ProblemParameters = SetProblemParameters61(GAParameters)
 %     ProblemParameters.s4LowerLimit = W2(2,n)-10;
 %     
 
-    scale = 15;
+    scale = 10;
     ProblemParameters.s1UpperLimit = W1(1,n)+Height/scale;
     ProblemParameters.s1LowerLimit = W1(1,n)-Height/scale;   
     ProblemParameters.s2UpperLimit = W1(2,n)+Height/scale;

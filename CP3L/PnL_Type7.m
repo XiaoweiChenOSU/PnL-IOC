@@ -4,6 +4,9 @@ clear;
 
 addpath('SRPnL');
 addpath('others');
+addpath('RPnL');
+addpath('LPnL-Bar-ENull');
+addpath('PnL-IOC');
 addpath('TypeReal71MultiGA');
 addpath('TypeReal72MultiGA');
 addpath('TypeReal73MultiGA');

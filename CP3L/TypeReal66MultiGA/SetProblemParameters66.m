@@ -37,14 +37,15 @@ function ProblemParameters = SetProblemParameters66(GAParameters)
 %     ProblemParameters.s4UpperLimit = Height;
 %     ProblemParameters.s4LowerLimit = 4*Height/5;
 
-    ProblemParameters.s1UpperLimit = W1(1,n)+Height/5;
-    ProblemParameters.s1LowerLimit = W1(1,n)-Height/5;
-    ProblemParameters.s2UpperLimit = W1(2,n)+Height/5;
-    ProblemParameters.s2LowerLimit = W1(2,n)-Height/5;
-    ProblemParameters.s3UpperLimit = W2(1,n)+Height/5;
-    ProblemParameters.s3LowerLimit = W2(1,n)-Height/5;
-    ProblemParameters.s4UpperLimit = W2(2,n)+Height/5;
-    ProblemParameters.s4LowerLimit = W2(2,n)-Height/5;
+    scale = 10;
+    ProblemParameters.s1UpperLimit = W1(1,n)+Height/scale;
+    ProblemParameters.s1LowerLimit = W1(1,n)-Height/scale;
+    ProblemParameters.s2UpperLimit = W1(2,n)+Height/scale;
+    ProblemParameters.s2LowerLimit = W1(2,n)-Height/scale;
+    ProblemParameters.s3UpperLimit = W2(1,n)+Height/scale;
+    ProblemParameters.s3LowerLimit = W2(1,n)-Height/scale;
+    ProblemParameters.s4UpperLimit = W2(2,n)+Height/scale;
+    ProblemParameters.s4LowerLimit = W2(2,n)-Height/scale;
 %     
 %     if ProblemParameters.s1LowerLimit < 0
 %         ProblemParameters.s1LowerLimit = 0;

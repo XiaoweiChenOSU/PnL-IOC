@@ -24,8 +24,11 @@ for j = 1:numImage
 %     p1 = [p(1,:); p(1,:); p(1,:)];
 %     p2 = [p(2,:); p(3,:); p(4,:)];
 
-    p1 = [roundn((p(1,:)),-1); roundn((p(1,:)),-1); roundn((p(1,:)),-1)];
-    p2 = [roundn((p(2,:)),-1);roundn((p(3,:)),-1);roundn((p(4,:)),-1)];
+%     p1 = [roundn((p(1,:)),-1); roundn((p(1,:)),-1); roundn((p(1,:)),-1)];
+%     p2 = [roundn((p(2,:)),-1);roundn((p(3,:)),-1);roundn((p(4,:)),-1)];
+
+    p1 = [round(p(1,:));round(p(1,:));round(p(1,:))];
+    p2 = [round(p(2,:));round(p(3,:));round(p(4,:))];
 
 % 
 %     I = imread('10c2796a0ad1486f835e992139f31b18_i0_4.jpg');

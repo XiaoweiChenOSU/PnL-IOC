@@ -21,9 +21,10 @@ for j = 1:numImage
 %     p1 = [p(1,:); p(1,:); p(1,:)];
 %     p2 = [p(2,:);p(3,:);p(4,:)];
 
-    p1 = [roundn((p(1,:)),-1); roundn((p(1,:)),-1); roundn((p(1,:)),-1)];
-    p2 = [roundn((p(2,:)),-1);roundn((p(3,:)),-1);roundn((p(4,:)),-1)];
-
+%     p1 = [roundn((p(1,:)),-1); roundn((p(1,:)),-1); roundn((p(1,:)),-1)];
+%     p2 = [roundn((p(2,:)),-1);roundn((p(3,:)),-1);roundn((p(4,:)),-1)];
+    p1 = [round(p(1,:));round(p(1,:));round(p(1,:))];
+    p2 = [round(p(2,:));round(p(3,:));round(p(4,:))];
 
     P1_w = [P(1,:); P(1,:); P(1,:)];
     P2_w = [P(2,:);P(3,:);P(4,:)];
@@ -117,16 +118,16 @@ errASPnL = mean(errepASPnL);
 errSRPnL = mean(errepSRPnL,'omitnan');
 
 
-errPnLIOC_R = mean(errR_IOC);
+errPnLIOC_Rr = mean(errR_IOC);
 errASPnL_R = mean(errR_ASPnL);
 errSRPnL_R = mean(errR_SRPnL);
 
-errPnLIOC_T = mean(errT_IOC);
+errPnLIOC_Tr = mean(errT_IOC);
 errASPnL_T = mean(errT_ASPnL);
 errSRPnL_T = mean(errT_SRPnL);
 
-% errPnLIOC_Rr = mean(errRr_IOC);
-% errPnLIOC_Tr = mean(errTr_IOC);
+errPnLIOC_R = mean(errRr_IOC);
+errPnLIOC_T = mean(errTr_IOC);
 
 
 

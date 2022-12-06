@@ -18,11 +18,11 @@ for j = 1:numImage
     A = groundTruth(j).intrinsics_matrix;
 
 
-    p1 = [roundn((p(1,:)),-1); roundn((p(1,:)),-1); roundn((p(1,:)),-1); roundn((p(2,:)),-1);roundn((p(2,:)),-1)];
-    p2 = [roundn((p(2,:)),-1);roundn((p(3,:)),-1);roundn((p(4,:)),-1);roundn((p(5,:)),-1);roundn((p(6,:)),-1)];
+%     p1 = [roundn((p(1,:)),-1); roundn((p(1,:)),-1); roundn((p(1,:)),-1); roundn((p(2,:)),-1);roundn((p(2,:)),-1)];
+%     p2 = [roundn((p(2,:)),-1);roundn((p(3,:)),-1);roundn((p(4,:)),-1);roundn((p(5,:)),-1);roundn((p(6,:)),-1)];
   
-%     p1 = [round(p(1,:)); round(p(1,:)); round(p(1,:)); round(p(2,:));round(p(2,:))];
-%     p2 = [round(p(2,:));round(p(3,:));round(p(4,:));round(p(5,:));round(p(6,:))];
+    p1 = [round(p(1,:)); round(p(1,:)); round(p(1,:)); round(p(2,:));round(p(2,:))];
+    p2 = [round(p(2,:));round(p(3,:));round(p(4,:));round(p(5,:));round(p(6,:))];
  
 
     P1_w = [P(1,:); P(1,:); P(1,:); P(2,:);P(2,:)];
